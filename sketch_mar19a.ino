@@ -43,10 +43,14 @@ void loop(){
   
     char key = keypad.getKey();
 
-    if (key) {
-        Serial.println(key);
+    if (key == '#') {
+        //Serial.println(key);
             tone(11, (int)key*10, 300); // Издаем звуковой сигнал длиной 300 миллисекунд 
     }
+    else{
+      noTone(11);
+    }
+    
     if (blink){
         digitalWrite(ledPin,!digitalRead(ledPin));    // Change the ledPin from Hi2Lo or Lo2Hi.
         delay(100);
@@ -57,32 +61,37 @@ void loop(){
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
+         
           if (key == '6') {
             digitalWrite(ledPin,HIGH);
                   
             blink = false;
-        }
+        } else
 
           if (key == '7') {
             digitalWrite(ledPin,LOW);
+            servo.write(60); //ставим серву на 150
+            
          
             blink = false;
         }
-
-        
+        else
+       
           if (key == '1'){
-             servo.write(150); //ставим серву на 150
-          
+            Serial.println(1);
+             servo.write(30); //ставим серву на 150
+             
+           
             blink = false;
         }
-
+         else
 
                   if (key == '*') {
              servo.write(30); //ставим серву на 150
           
-            blink = false;
+            blink = true;
         }
-    
+    Serial.println(key);
         break;
 
     case RELEASED:
