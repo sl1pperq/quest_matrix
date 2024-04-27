@@ -1,3 +1,4 @@
+
 /* @file EventSerialKeypad.pde
  || @version 1.0
  || @author Alexander Brevig
@@ -28,28 +29,50 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 byte ledPin = 12; 
 
 boolean blink = false;
+boolean false_kod = false;
 boolean ledPin_state;
+int counter = 0;
 
 void setup(){
+    
     Serial.begin(9600);
     pinMode(ledPin, OUTPUT);              // Sets the digital pin as output.
    // digitalWrite(ledPin, HIGH);           // Turn the LED on.
     ledPin_state = digitalRead(ledPin);   // Store initial LED state. HIGH when LED is on.
     keypad.addEventListener(keypadEvent); // Add an event listener for this keypad
     servo.attach(9); //подключаем серву к порту 9
+    servo.write(45);
+    
+    
 }
 
 void loop(){
-  
-    char key = keypad.getKey();
-
-    if (key == '#') {
-        //Serial.println(key);
-            tone(11, (int)key*10, 300); // Издаем звуковой сигнал длиной 300 миллисекунд 
+  if (counter == 4) {
+       
+            tone(11, 400, 250); // Издаем звуковой сигнал длиной 300 миллисекунд 
+            delay(2000);
+            tone(11, 350, 1000);
+            counter = 0;
+            pinMode(11, INPUT);
+            
     }
     else{
       noTone(11);
     }
+    if (false_kod){
+      servo.write(45);
+      digitalWrite(ledPin,HIGH);
+      blink = true;
+      delay(500);
+      digitalWrite(ledPin,LOW);
+      blink = false;
+      false_kod = false;
+      counter = 0;
+    }
+  
+    char key = keypad.getKey();
+
+    
     
     if (blink){
         digitalWrite(ledPin,!digitalRead(ledPin));    // Change the ledPin from Hi2Lo or Lo2Hi.
@@ -61,36 +84,103 @@ void loop(){
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
-         
-          if (key == '6') {
-            digitalWrite(ledPin,HIGH);
-                  
+    if (key == '9'){
+            if (counter == 0){
+            Serial.println(1);
+             servo.write(67); //ставим серву на 150
+             counter+=1;
+            }
+            else{
+              false_kod = true;
+            }
+          }
+       
+          if (key == '6'){
+            if (counter == 1){
+            Serial.println(1);
+             servo.write(89); //ставим серву на 150
+             
+           counter +=1;
+            }
+           else{
+            false_kod = true;
+          }
+          }
+          
+       
+          if (key == '2'){
+            if (counter == 2){
+            Serial.println(1);
+             servo.write(101); //ставим серву на 150
+          counter +=1;
+            }
+            else{
+            false_kod = true;
+          }
+          }
+          
+       
+          if (key == '3' ){
+          if (counter == 3){
+            Serial.println(1);
+             servo.write(135); //ставим серву на 150
+             
+           counter +=1;
             blink = false;
-        } else
+          }
+            else{
+            false_kod = true;
+          }
+          }
+          
+          ///////////////////////////////////////////////////////////
 
           if (key == '7') {
-            digitalWrite(ledPin,LOW);
-            servo.write(60); //ставим серву на 150
+            false_kod = true;
             
-         
-            blink = false;
+       
         }
-        else
+        
        
           if (key == '1'){
             Serial.println(1);
-             servo.write(30); //ставим серву на 150
+             false_kod = true;
              
            
-            blink = false;
-        }
-         else
 
-                  if (key == '*') {
-             servo.write(30); //ставим серву на 150
+        }
+         
+         
+         if (key == '4') {
+             false_kod = true;
+          
+        }
+        if (key == '5') {
+             false_kod = true;
+          
+        }
+        if (key == '8') {
+             false_kod = true;
           
             blink = true;
         }
+        if (key == '0') {
+             false_kod = true;
+          
+        }
+        if (key == '#') {
+             false_kod = true;
+          
+        }
+        
+
+                  if (key == '*') {
+             false_kod = true;
+          
+        }
+        
+       
+          
     Serial.println(key);
         break;
 
